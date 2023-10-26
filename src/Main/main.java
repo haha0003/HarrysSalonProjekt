@@ -5,5 +5,6 @@ public class main {
         System.out.println("dada");
         System.out.println("lili");
         System.out.println("hanadi er sjov");
+        System.out.println("slå");
     }
 }
