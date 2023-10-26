@@ -1,8 +1,10 @@
 package Main;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Booking {
     private LocalDateTime bookingTime;
@@ -11,6 +13,7 @@ public class Booking {
     private String customerMail;
     private ArrayList<Booking> bookings;
     final String filename = "BookingFile.txt";
+    Scanner scanner = new Scanner(System.in);
 
 
     Booking(String customerName, String customerMail, LocalDateTime bookingDate, LocalDateTime bookingTime){
@@ -53,6 +56,20 @@ public class Booking {
     }
 
     public void createBooking(){
+        System.out.println("Enter customer name: " );
+        customerName = scanner.next();
+
+
+        LocalDate today = LocalDate.now();
+        System.out.println("Current date today " + today);
+
+        System.out.println("Choose Date: ");
+
+
+
+        for (int i = 0; true; i ++) {
+
+        }
     }
 
     public void deleteBooking(){
