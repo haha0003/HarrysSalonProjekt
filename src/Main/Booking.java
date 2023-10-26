@@ -10,7 +10,7 @@ public class Booking {
     private String customerName;
     private String customerMail;
     private ArrayList<Booking> bookings;
-    final String filename = "BookingFile";
+    final String filename = "BookingFile.txt";
 
 
     Booking(String customerName, String customerMail, LocalDateTime bookingDate, LocalDateTime bookingTime){
