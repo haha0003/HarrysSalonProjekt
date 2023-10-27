@@ -9,7 +9,7 @@ public class Main {
 
     private void run() {
 
-        Menu menu = new Menu("Welcome! please enter number", new String[]{
+        Menu menu = new Menu("Please enter number: ", new String[]{
                 "1. Create a booking",
                 "2. Delete a booking",
                 "3. Serve customer",
@@ -18,6 +18,7 @@ public class Main {
         });
 
         boolean running = true;
+        System.out.println("Welcome!");
         while (running) {
         menu.printMenu();
         int userInput = menu.readChoice();

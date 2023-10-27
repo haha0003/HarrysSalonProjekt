@@ -132,6 +132,10 @@ public class Booking {
     public void saveFile(){
     }
 
+    public void readFile(){
+
+    }
+
 
 }
 
