@@ -23,6 +23,7 @@ public class Booking {
         this.customerName = customerName;
         this.customerMail = customerMail;
         this.bookingTime = bookingTime;
+        bookings = new ArrayList<Booking>();
     }
 
     public String getCustomerName() {
@@ -95,7 +96,7 @@ public class Booking {
 
         System.out.println("Booking created for customer");
 
-        exsistingBookings.add(bookingTime);
+        existingBookings.add(bookingTime);
         availableTimes.remove(bookingTime);
 
 
@@ -109,6 +110,15 @@ public class Booking {
     }
 
     public void deleteBooking(){
+        int index = 1;
+        int choosenIndex;
+        System.out.println("which booking do you want to delete? Type number.");
+        for (Booking i : bookings) {
+            System.out.println(index + ". " + i.getBookingDate() + " - " + i.getBookingTime());
+            index++;
+            choosenIndex = scanner.nextInt();
+            bookings.remove(choosenIndex);
+        }
     }
 
     public void saveFileAfterDeleteBooking(){
@@ -122,6 +132,13 @@ public class Booking {
     }
 
 
+    public LocalDateTime getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(LocalDateTime bookingDate) {
+        this.bookingDate = bookingDate;
+    }
 }
 
 
