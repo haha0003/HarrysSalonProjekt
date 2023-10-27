@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Booking {
@@ -14,12 +15,13 @@ public class Booking {
     private ArrayList<Booking> bookings;
     final String filename = "BookingFile.txt";
     Scanner scanner = new Scanner(System.in);
+    private ServicePriceList servicePriceList;
 
 
-    Booking(String customerName, String customerMail, LocalDateTime bookingDate, LocalDateTime bookingTime){
+
+    Booking(String customerName, String customerMail, LocalDateTime bookingTime){
         this.customerName = customerName;
         this.customerMail = customerMail;
-        this.bookingDate = bookingDate;
         this.bookingTime = bookingTime;
     }
 
@@ -31,9 +33,6 @@ public class Booking {
         return customerMail;
     }
 
-    public LocalDateTime getBookingDate() {
-        return bookingDate;
-    }
 
     public LocalDateTime getBookingTime() {
         return bookingTime;
@@ -47,29 +46,66 @@ public class Booking {
         this.customerMail = customerMail;
     }
 
-    public void setBookingDate(LocalDateTime bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
     public void setBookingTime(LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;
     }
 
-    public void createBooking(){
-        System.out.println("Enter customer name: " );
-        customerName = scanner.next();
+    public void createBooking() {
 
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusDays(4);
 
-        LocalDate today = LocalDate.now();
-        System.out.println("Current date today " + today);
+        List<LocalDateTime> availableTimesInInterval = new ArrayList<>();
 
-        System.out.println("Choose Date: ");
-
-
-
-        for (int i = 0; true; i ++) {
-
+        for (LocalDateTime time = startDate; !time.isAfter(endDate); time = time.plusHours(1)) {
+            if (availableTimes.contains(time) && !existingBooking.contains(time)) {
+                availableTimesInInterval.add(time);
+            }
         }
+
+        if (availableTimesInInterval.isEmpty()) {
+            System.out.println("No available times in the next four days. ");
+            return;
+        }
+
+        System.out.println("Available Times for the next four days:");
+        for (int i = 0; i < availableTimesInInterval.size(); i++) {
+            System.out.println(i + ". " + availableTimesInInterval.get(i));
+        }
+
+
+        System.out.println("Create booking for customer:");
+        System.out.println("Enter customer name: ");
+        customerName = scanner.nextLine();
+        System.out.println("Enter customer mail: ");
+        customerMail = scanner.nextLine();
+
+        servicePriceList = getServicePriceList();
+
+        System.out.println("Choose the type of booking you would want: ");
+        for (int i = 0; i < servicePriceList.size(); i++) {
+            System.out.println(i + ". " + servicePriceList.get(i));
+        }
+
+        int serviceChoice = scanner.nextInt();
+
+        bookingTime = availableTimesInInterval.get(0);
+
+        Booking booking = new Booking(customerName, customerMail, bookingTime, servicePriceList.get(serviceChoice));
+
+        System.out.println("Booking created for customer");
+
+        exsistingBookings.add(bookingTime);
+        availableTimes.remove(bookingTime);
+
+
+        System.out.println("Booking created for: " + bookingTime);
+        System.out.println("Customer: " + customerName);
+        System.out.println("Customer Mail: " + customerMail);
+        System.out.println("Service: " + servicePriceList);
+
+        scanner.close();
+
     }
 
     public void deleteBooking(){
