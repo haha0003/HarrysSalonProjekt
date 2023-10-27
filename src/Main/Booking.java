@@ -15,7 +15,7 @@ public class Booking {
     private List<LocalDateTime> availableTimes = generateAvailableTimes();
     private List<LocalDateTime> existingBookings = new ArrayList<>();
 
-    private ServicePriceList servicePriceList;
+    private Service servicePriceList;
 
     final String filename = "BookingFile.txt";
     private Scanner scanner = new Scanner(System.in);
@@ -96,7 +96,7 @@ public class Booking {
 
 
         System.out.println("Choose the type of booking you would want: ");
-        for (int i = 0; i < servicePriceList.size(); i++) {
+        for (int i = 0; i < servicePriceList.; i++) {
             System.out.println(i + ". " + servicePriceList.get(i));
         }
 
@@ -104,7 +104,7 @@ public class Booking {
 
         bookingTime = availableTimesInInterval.get(0);
 
-        Booking booking = new Booking(customerName, customerMail, bookingTime, servicePriceList.get(serviceChoice));
+        Booking booking = new Booking(customerName, customerMail, bookingTime, servicePriceList.(serviceChoice));
 
         System.out.println("Booking created for customer");
 
