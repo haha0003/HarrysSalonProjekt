@@ -36,6 +36,9 @@ public class Service {
         services.add(new Service("Hair coloring", 400));
         services.add(new Service("Perm", 300));
         services.add(new Service("Beard trim", 100 ));
+        services.add(new Service("Bleach asshole", 1000));
+        services.add(new Service("Bikini wax", 500));
+        services.add(new Service("Manicure", 400));
     }
 
     public void viewServices(){
@@ -72,11 +75,13 @@ public class Service {
             }
         }
 
-        public void viewSelectedServices(){
-            System.out.println("Selected services: ");
-            for (int i = 0; i < chosenServiceList.size(); i++){
-                Service service = chosenServiceList.get(i);
-                System.out.printf("#%-3d %-20s $%d%n", i, service.getName(), service.getPrice());
-            }
+    public void viewSelectedServices(){
+        System.out.println("----------------------------------------------");
+        System.out.println("Selected services: ");
+        for (int i = 0; i < chosenServiceList.size(); i++){
+            Service service = chosenServiceList.get(i);
+            System.out.printf("#%-3d %-20s $%d%n", i, service.getName(), service.getPrice());
         }
+    }
+
 }
