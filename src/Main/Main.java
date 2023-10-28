@@ -14,6 +14,7 @@ public class Main {
                 "4. View financials",
                 "5. View services",
                 "6. Choose service",
+                "7. View service no price",
                 "9. End program"
         });
 
@@ -32,6 +33,8 @@ public class Main {
                 case 4 -> System.out.println();
                 case 5 -> service.viewServices();
                 case 6 -> service.chooseService();
+                case 7 -> service.viewServicesNoPrice();
+                case 8 -> service.chooseServiceNoPrice();
                 case 9 -> running = false;
                 default -> System.out.println("INVALID!!!");
             }
