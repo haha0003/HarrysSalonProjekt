@@ -8,18 +8,32 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Booking {
-    private LocalDateTime bookingTime;
-    private LocalDateTime bookingDate;
     private String customerName;
     private String customerMail;
-    private ArrayList<Booking> bookings;
-    final String filename = "BookingFile.txt";
-    Scanner scanner = new Scanner(System.in);
+    private LocalDateTime bookingTime;
+
+    private List<LocalDateTime> availableTimes = generateAvailableTimes();
+    private List<LocalDateTime> existingBookings = new ArrayList<>();
+
     private ServicePriceList servicePriceList;
 
+    final String filename = "BookingFile.txt";
+    private Scanner scanner = new Scanner(System.in);
+
+    public List<LocalDateTime> generateAvailableTimes() {
+        List<LocalDateTime> availableTimes = new ArrayList<>();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        while (currentDateTime.getHour() < 18) {
+            availableTimes.add(currentDateTime);
+            currentDateTime = currentDateTime.plusHours(1);
+
+        }
+        return availableTimes;
+    }
 
 
-    Booking(String customerName, String customerMail, LocalDateTime bookingTime){
+    public Booking(String customerName, String customerMail, LocalDateTime bookingTime){
         this.customerName = customerName;
         this.customerMail = customerMail;
         this.bookingTime = bookingTime;
@@ -59,7 +73,7 @@ public class Booking {
         List<LocalDateTime> availableTimesInInterval = new ArrayList<>();
 
         for (LocalDateTime time = startDate; !time.isAfter(endDate); time = time.plusHours(1)) {
-            if (availableTimes.contains(time) && !existingBooking.contains(time)) {
+            if (availableTimes.contains(time) && !existingBookings.contains(time)) {
                 availableTimesInInterval.add(time);
             }
         }
@@ -81,7 +95,6 @@ public class Booking {
         System.out.println("Enter customer mail: ");
         customerMail = scanner.nextLine();
 
-        servicePriceList = getServicePriceList();
 
         System.out.println("Choose the type of booking you would want: ");
         for (int i = 0; i < servicePriceList.size(); i++) {
@@ -104,6 +117,8 @@ public class Booking {
         System.out.println("Customer: " + customerName);
         System.out.println("Customer Mail: " + customerMail);
         System.out.println("Service: " + servicePriceList);
+
+        saveFile();
 
         scanner.close();
 

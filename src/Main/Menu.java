@@ -29,6 +29,7 @@ public class Menu {
             if (scanner.hasNextInt()){
                 choice = scanner.nextInt();
                 valid = true;
+                System.out.println();
             } else {
                 scanner.nextLine();
             }
