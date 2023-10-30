@@ -5,6 +5,7 @@ public class Main {
        new Main().run();
     }
 
+    Booking booking;
     private void run() {
 
         Menu menu = new Menu("\nPlease enter number: ", new String[]{

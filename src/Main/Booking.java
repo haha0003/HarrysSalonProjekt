@@ -39,30 +39,17 @@ public class Booking {
         this.bookingTime = bookingTime;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public String getCustomerMail() {
-        return customerMail;
-    }
-
 
     public LocalDateTime getBookingTime() {
         return bookingTime;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public void setCustomerMail(String customerMail) {
-        this.customerMail = customerMail;
-    }
 
     public void setBookingTime(LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;
     }
+
+
 
     public void createBooking() {
 
@@ -95,16 +82,16 @@ public class Booking {
         customerMail = scanner.nextLine();
 
 
-        System.out.println("Choose the type of booking you would want: ");
+       /* System.out.println("Choose the type of booking you would want: ");
         for (int i = 0; i < servicePriceList.; i++) {
             System.out.println(i + ". " + servicePriceList.get(i));
-        }
+        } */
 
-        int serviceChoice = scanner.nextInt();
+        /*int serviceChoice = scanner.nextInt();*/
 
         bookingTime = availableTimesInInterval.get(0);
 
-        Booking booking = new Booking(customerName, customerMail, bookingTime, servicePriceList.(serviceChoice));
+        Booking booking = new Booking(customerName, customerMail, bookingTime);
 
         System.out.println("Booking created for customer");
 
@@ -120,6 +107,8 @@ public class Booking {
         saveFile();
 
         scanner.close();
+
+
 
     }
 
