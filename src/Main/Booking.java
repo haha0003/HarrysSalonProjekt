@@ -116,7 +116,7 @@ public class Booking {
 
         Booking booking = new Booking(customerName, customerMail, bookingTime);
 
-        System.out.println("Booking created for customer");
+        System.out.println("Booking created for " + customerName);
 
         existingBookings.add(bookingTime);
         availableTimes.remove(bookingTime);
