@@ -69,6 +69,7 @@ public class Booking {
 
     public void createBooking() {
 
+
         System.out.println("Show available bookings: ");
         for (int i = 0; i < availableTimes.size(); i++) {
             System.out.println(i + ". " + availableTimes.get(i));
