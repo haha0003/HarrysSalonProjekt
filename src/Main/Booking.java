@@ -1,6 +1,8 @@
 package Main;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,7 +13,8 @@ public class Booking {
     private String customerName;
     private String customerMail;
     private LocalDateTime bookingTime;
-
+    private LocalDateTime bookingDate; // var blevet fjernet??
+    private ArrayList<Booking> bookings;
     private List<LocalDateTime> availableTimes = generateAvailableTimes();
     private List<LocalDateTime> existingBookings = new ArrayList<>();
 
@@ -33,7 +36,7 @@ public class Booking {
     }
 
 
-    public Booking(String customerName, String customerMail, LocalDateTime bookingTime){
+    public Booking(String customerName, String customerMail, LocalDateTime bookingTime) {
         this.customerName = customerName;
         this.customerMail = customerMail;
         this.bookingTime = bookingTime;
@@ -52,6 +55,15 @@ public class Booking {
     public LocalDateTime getBookingTime() {
         return bookingTime;
     }
+
+    public LocalDateTime getBookingDate() {
+      return bookingDate;
+    }
+
+    public void setBookingDate (LocalDateTime bookingDate){
+     this.bookingDate = bookingDate;
+    }
+
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
@@ -124,36 +136,66 @@ public class Booking {
 
     }
 
-    public void deleteBooking(){
+    public void deleteBooking() {
         int index = 1;
-        int choosenIndex;
+        int chosenIndex;
         System.out.println("which booking do you want to delete? Type number.");
         for (Booking i : bookings) {
             System.out.println(index + ". " + i.getBookingDate() + " - " + i.getBookingTime());
             index++;
-            choosenIndex = scanner.nextInt();
-            bookings.remove(choosenIndex);
         }
+        do {
+            chosenIndex = scanner.nextInt();
+            if (chosenIndex < 1 || chosenIndex > index - 1) {
+                System.out.println("Invalid option. Please try again.");
+            }
+        } while (chosenIndex < 1 || chosenIndex > index - 1);
+
+        // Removes the booking at the chosen index
+        bookings.remove(chosenIndex - 1);
+        System.out.println("The booking is removed.");
     }
 
-    public void saveFileAfterDeleteBooking(){
+    public void saveFileAfterDeleteBooking() { // vi behøver ikke!! hear me out.
     }
 
-    public void saveFile(){
-    }
+    public void saveFile() {
+        try {
+            File myFile = new File("BookingFile.txt");
+            if (myFile.createNewFile()) {
+                System.out.println("File created: " + myFile.getName());
+            } else {
+                System.out.println("A file already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
+        try {
+            FileWriter myWriter = new FileWriter("BookingFile.txt");
+            for (Booking i : bookings) {
+                myWriter.write("%s - %s\nCustomer name:%s\nMail:%s\n_______________________".formatted(i.getBookingDate(), i.getBookingTime(), i.getCustomerName(), i.getCustomerMail()));
+                myWriter.write(System.lineSeparator());
+            }
+                myWriter.close();
+                System.out.println("The file has been saved");
+            } catch(IOException e){
+                System.out.println("An error occurred.");
+            }
 
-    public void readFile(){
 
-    }
+            public void readFile() {
+
+            }
 
 
-    public LocalDateTime getBookingDate() {
-        return bookingDate;
-    }
 
-    public void setBookingDate(LocalDateTime bookingDate) {
-        this.bookingDate = bookingDate;
+
+
+
+
+
+
+
+
     }
 }
-
-
