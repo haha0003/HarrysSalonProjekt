@@ -15,12 +15,10 @@ public class Booking {
     private List<LocalDateTime> availableTimes = generateAvailableTimes();
     private List<LocalDateTime> existingBookings = new ArrayList<>();
 
-
     final String filename = "BookingFile.txt";
     private Scanner scanner = new Scanner(System.in);
 
     public Booking() {
-
     }
 
     public List<LocalDateTime> generateAvailableTimes() {
@@ -30,11 +28,9 @@ public class Booking {
         while (currentDateTime.getHour() < 18) {
             availableTimes.add(currentDateTime);
             currentDateTime = currentDateTime.plusHours(1);
-
         }
         return availableTimes;
     }
-
 
     public Booking(String customerName, String customerMail, LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;
@@ -44,7 +40,6 @@ public class Booking {
     public LocalDateTime getBookingTime() {
         return bookingTime;
     }
-
 
     public void setBookingTime(LocalDateTime bookingTime) {
         this.bookingTime = bookingTime;
@@ -66,16 +61,11 @@ public class Booking {
         }
     }
 
-
-
     public void createBooking() {
-
-
         System.out.println("Show available bookings: ");
         for (int i = 0; i < availableTimes.size(); i++) {
             System.out.println(i + ". " + availableTimes.get(i));
         }
-
 
         System.out.println("Choose the number of the selected date");
         int chooseNumber = scanner.nextInt();
@@ -90,44 +80,34 @@ public class Booking {
         }
 
         customer = new Customer("", "");
-        System.out.println("Create booking for customer:");
-        scanner.nextLine();
+        System.out.println("Create booking for customer");
         System.out.println("Enter customer name: ");
         String name = scanner.nextLine();
         customer.setCustomerName(name);
-
         do {
             System.out.println("Enter customer mail: ");
             String mail = scanner.nextLine();
             customer.setCustomerMail(mail);
-        } while (customer.getCustomerMail() == null);
-
+        } while (!customer.isValidMail(customer.getCustomerMail()));
 
         Service service = new Service();
         System.out.println("Choose service: ");
         service.chooseServiceNoPrice();
 
-
         Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), bookingTime);
-
 
         existingBookings.add(bookingTime);
         availableTimes.remove(bookingTime);
 
-
         System.out.println("Booking created for: " + customer.getCustomerName() + ", " + bookingTime);
         System.out.println("Customer: " + customer.getCustomerName());
         System.out.println("Customer Mail: " + customer.getCustomerMail());
-        System.out.println();
         service.viewSelectedServicesNoPrice();
 
         saveFile();
 
         scanner.close();
-
     }
-
-
 
     public void deleteBooking() {
     }

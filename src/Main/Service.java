@@ -76,7 +76,6 @@ public class Service {
     }
 
     public void viewSelectedServicesNoPrice(){
-        System.out.println("---------------------------------------------");
         System.out.println("Selected services: ");
         for (int i = 0; i < chosenServiceListNoPrice.size(); i++){
             Service service = chosenServiceListNoPrice.get(i);
@@ -121,7 +120,6 @@ public class Service {
         }
 
     public void viewSelectedServices(){
-        System.out.println("----------------------------------------------");
         System.out.println("Selected services: ");
         for (int i = 0; i < chosenServiceList.size(); i++){
             Service service = chosenServiceList.get(i);

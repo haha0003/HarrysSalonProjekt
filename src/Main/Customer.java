@@ -1,5 +1,7 @@
 package Main;
 
+import java.util.Scanner;
+
 public class Customer {
     private String customerName;
     private String customerMail;
@@ -8,7 +10,6 @@ public class Customer {
         this.customerName = customerName;
         this.customerMail = customerMail;
     }
-
 
     public String getCustomerName() {
         return customerName;
@@ -21,16 +22,14 @@ public class Customer {
         this.customerName = customerName;
     }
     public void setCustomerMail(String customerMail) {
-        this.customerMail = customerMail;
         if (isValidMail(customerMail)) {
             this.customerMail = customerMail;
         } else {
-            System.out.println("Invalid Mail. Please enter email again with " + "@." );
+            System.out.println("INVALID!!!");
         }
-
     }
 
-    private boolean isValidMail(String customerMail) {
+    public boolean isValidMail(String customerMail) {
        return customerMail.contains("@");
         }
 }
