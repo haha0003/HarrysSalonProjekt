@@ -22,5 +22,15 @@ public class Customer {
     }
     public void setCustomerMail(String customerMail) {
         this.customerMail = customerMail;
+        if (isValidMail(customerMail)) {
+            this.customerMail = customerMail;
+        } else {
+            System.out.println("Invalid Mail. Please enter email again with " + "@." );
+        }
+
     }
+
+    private boolean isValidMail(String customerMail) {
+       return customerMail.contains("@");
+        }
 }
