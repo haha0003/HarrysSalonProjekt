@@ -48,8 +48,13 @@ public class Service {
     }
 
     public void chooseServiceNoPrice(){
+        boolean start = true;
         boolean addAnotherService = true;
 
+    while (start){
+        System.out.println("Do you want to add a service? (Y/N)");
+        String ans = scanner.nextLine();
+        if (ans.equalsIgnoreCase("y")){
         while (addAnotherService) {
             viewServicesNoPrice();
             System.out.println("Enter the number of the wanted service");
@@ -58,21 +63,29 @@ public class Service {
             if (choiceOfService >= 0 && choiceOfService < services.size()) {
                 Service service = services.get(choiceOfService);
                 int locationOfService = services.indexOf(service);
-                System.out.printf("#%-3d %-20s %n", locationOfService, service.getName());
+                System.out.printf("\n#%-3d %-20s %n", locationOfService, service.getName());
                 chosenServiceListNoPrice.add(service);
             } else {
                 System.out.println("INVALID!!!");
             }
-
-            System.out.println("\nWould you like to add another service? (Y/N)");
+            System.out.println("Would you like to add another service? (Y/N)");
             String addServiceChoice = scanner.nextLine();
             if (addServiceChoice.equalsIgnoreCase("N")) {
                 addAnotherService = false;
+                start = false;
                 viewSelectedServicesNoPrice();
             } else if (!addServiceChoice.equalsIgnoreCase("Y")){
                 System.out.println("INVALID!!!");
             }
+            }
+            }
+        else if (ans.equalsIgnoreCase("n")){
+            start = false;
         }
+        else {
+            System.out.println("INVALID!!!");
+        }
+    }
     }
 
     public void viewSelectedServicesNoPrice(){
@@ -82,8 +95,6 @@ public class Service {
             System.out.printf("#%-3d %-20s %n", i, service.getName());
         }
     }
-
-
 
     public void viewServices(){
         for (int i = 0; i < services.size(); i++){

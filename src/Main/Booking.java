@@ -2,85 +2,37 @@ package Main;
 
 import java.io.File;
 import java.sql.Array;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Booking {
     private Customer customer;
-    private LocalDateTime bookingTime;
-
-    private List<LocalDateTime> availableTimes = generateAvailableTimes();
-    private List<LocalDateTime> existingBookings = new ArrayList<>();
-
+    private ArrayList<String> bookings = new ArrayList<String>();
+    private ArrayList<String> availableBookings = new ArrayList<String>();
     final String filename = "BookingFile.txt";
-    private Scanner scanner = new Scanner(System.in);
+
+    Scanner scanner = new Scanner(System.in);
+    Random random = new Random();
+
+    Booking(String name, String mail, ArrayList<String> bookings, String date) {
+        this.customer = new Customer("", "");
+        this.customer.setCustomerName(name);
+        this.customer.setCustomerMail(mail);
+        this.bookings = bookings;
+        this.bookings.add(date);
+    }
 
     public Booking() {
     }
 
-    public List<LocalDateTime> generateAvailableTimes() {
-        List<LocalDateTime> availableTimes = new ArrayList<>();
-        LocalDateTime currentDateTime = LocalDateTime.now();
-
-        while (currentDateTime.getHour() < 18) {
-            availableTimes.add(currentDateTime);
-            currentDateTime = currentDateTime.plusHours(1);
-        }
-        return availableTimes;
-    }
-
-    public Booking(String customerName, String customerMail, LocalDateTime bookingTime) {
-        this.bookingTime = bookingTime;
-    }
-
-
-    public LocalDateTime getBookingTime() {
-        return bookingTime;
-    }
-
-    public void setBookingTime(LocalDateTime bookingTime) {
-        this.bookingTime = bookingTime;
-    }
-
-    public void availableBookings() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime endDate = now.plusDays(5);
-
-        System.out.println("Available Times for the next four days");
-        for (LocalDateTime time = now; !time.isAfter(endDate); time = time.plusHours(1)) {
-            if (availableTimes.contains(time) && !existingBookings.contains(time)) {
-                System.out.println(time);
-            }
-        }
-
-        if (availableTimes.isEmpty()) {
-            System.out.println("No available times in the next four days");
-        }
-    }
-
-    public void createBooking() {
-        System.out.println("Show available bookings: ");
-        for (int i = 0; i < availableTimes.size(); i++) {
-            System.out.println(i + ". " + availableTimes.get(i));
-        }
-
-        System.out.println("Choose the number of the selected date");
-        int chooseNumber = scanner.nextInt();
-
-        if (chooseNumber >= 0 && chooseNumber < availableTimes.size()) {
-            LocalDateTime chosenDate = availableTimes.get(chooseNumber);
-            existingBookings.add(chosenDate);
-        } else {
-            System.out.println("Invalid number. Please choose a valid booking date");
-            scanner.close();
-            return;
-        }
-
+    public void createCustomer(){
         customer = new Customer("", "");
-        System.out.println("Create booking for customer");
+        System.out.println("CREATE BOOKING");
         System.out.println("Enter customer name: ");
         String name = scanner.nextLine();
         customer.setCustomerName(name);
@@ -89,24 +41,76 @@ public class Booking {
             String mail = scanner.nextLine();
             customer.setCustomerMail(mail);
         } while (!customer.isValidMail(customer.getCustomerMail()));
+    }
 
+    public void createBooking(){
+        createCustomer();
         Service service = new Service();
-        System.out.println("Choose service: ");
         service.chooseServiceNoPrice();
+        System.out.println();
+        availableDates();
+        boolean validChoice = false;
+        while (!validChoice) {
+            System.out.println("Choose a date: ");
+            int ans = scanner.nextInt();
+            scanner.nextLine();
+            if (ans >= 0 && ans < availableBookings.size()) {
+                String selectedDate = availableBookings.get(ans);
+                availableBookings.remove(ans);
+                selectedDate = selectedDate.replaceAll("#\\d+\\. ", "");
+                System.out.println("Selected date: " + selectedDate);
 
-        Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), bookingTime);
+                Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), bookings, selectedDate);
 
-        existingBookings.add(bookingTime);
-        availableTimes.remove(bookingTime);
+                System.out.println("\n\nBOOKING CREATED");
+                System.out.println("Customer name: " + customer.getCustomerName());
+                System.out.println("Customer mail: " + customer.getCustomerMail());
+                service.viewSelectedServicesNoPrice();
+                viewBooking();
 
-        System.out.println("Booking created for: " + customer.getCustomerName() + ", " + bookingTime);
-        System.out.println("Customer: " + customer.getCustomerName());
-        System.out.println("Customer Mail: " + customer.getCustomerMail());
-        service.viewSelectedServicesNoPrice();
+                validChoice = true;
+            } else {
+                System.out.println("INVALID!!!");
+            }
+        }
+    }
 
-        saveFile();
+    public void viewBooking(){
+        System.out.printf("Booking date: ");
+        for (int i = 0; i < bookings.size(); i++) {
+            System.out.println(bookings.get(i));
+        }
+    }
 
-        scanner.close();
+    public void availableDates(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd EEEE HH:mm", Locale.ENGLISH);
+        for (int i = 0; i < 5; i++) {
+            LocalDateTime dateTime = randomDay();
+            String formatDateTime = "#" + i + ". " + dateTime.format(formatter);
+            availableBookings.add(formatDateTime);
+            System.out.println(formatDateTime);
+        }
+    }
+
+    public LocalDateTime randomDay(){
+        LocalDateTime randomDateTime;
+        do { randomDateTime = randomTime();
+        } while (randomDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || randomDateTime.getDayOfWeek() == DayOfWeek.SUNDAY);
+        return randomDateTime;
+    }
+
+    public LocalDateTime randomTime() {
+        LocalDateTime start = LocalDateTime.of(2023, 01, 01, 23, 59);
+        LocalDateTime end = LocalDateTime.of(2024, 12, 31, 23, 59);
+        long days = ChronoUnit.DAYS.between(start, end);
+        long randomDays = ThreadLocalRandom.current().nextLong(days + 1);
+        int randomHour = random.nextInt(10) + 8;
+        int randomMinute;
+        if (random.nextInt() <= 30) {randomMinute = 30;
+        } else {randomMinute = 0;}
+        return start.plusDays(randomDays)
+                .withHour(randomHour)
+                .withMinute(randomMinute);
     }
 
     public void deleteBooking() {
