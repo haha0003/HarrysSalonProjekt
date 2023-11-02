@@ -1,6 +1,9 @@
 package Main;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Array;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,22 +15,29 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Booking {
     private Customer customer;
-    private ArrayList<String> bookings = new ArrayList<String>();
+    private String selectedDate;
     private ArrayList<String> availableBookings = new ArrayList<String>();
+    private ArrayList<Booking> bookings = new ArrayList<>();
     final String filename = "BookingFile.txt";
 
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
 
-    Booking(String name, String mail, ArrayList<String> bookings, String date) {
+    Booking(String name, String mail, String selectedDate) {
         this.customer = new Customer("", "");
         this.customer.setCustomerName(name);
         this.customer.setCustomerMail(mail);
-        this.bookings = bookings;
-        this.bookings.add(date);
+        this.selectedDate = selectedDate;
     }
 
     public Booking() {
+    }
+
+    public void setSelectedDate(String selectedDate) {
+        this.selectedDate = selectedDate;
+    }
+    public String getSelectedDate() {
+        return selectedDate;
     }
 
     public void createCustomer(){
@@ -40,7 +50,7 @@ public class Booking {
             System.out.println("Enter customer mail: ");
             String mail = scanner.nextLine();
             customer.setCustomerMail(mail);
-        } while (!customer.isValidMail(customer.getCustomerMail()));
+        } while (!customer.isValidMail(customer.getCustomerMail()) && !customer.isValidDot(customer.getCustomerMail()));
     }
 
     public void createBooking(){
@@ -55,18 +65,22 @@ public class Booking {
             int ans = scanner.nextInt();
             scanner.nextLine();
             if (ans >= 0 && ans < availableBookings.size()) {
-                String selectedDate = availableBookings.get(ans);
+                setSelectedDate (availableBookings.get(ans));
                 availableBookings.remove(ans);
-                selectedDate = selectedDate.replaceAll("#\\d+\\. ", "");
-                System.out.println("Selected date: " + selectedDate);
+                setSelectedDate (selectedDate.replaceAll("#\\d+\\. ", ""));
+                System.out.println("Selected date: " + getSelectedDate());
 
-                Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), bookings, selectedDate);
+                Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), getSelectedDate());
+
+                bookings.add(booking);
 
                 System.out.println("\n\nBOOKING CREATED");
                 System.out.println("Customer name: " + customer.getCustomerName());
                 System.out.println("Customer mail: " + customer.getCustomerMail());
+                System.out.println("Booking date: " + getSelectedDate());
                 service.viewSelectedServicesNoPrice();
-                viewBooking();
+
+                saveFile();
 
                 validChoice = true;
             } else {
@@ -75,20 +89,15 @@ public class Booking {
         }
     }
 
-    public void viewBooking(){
-        System.out.printf("Booking date: ");
-        for (int i = 0; i < bookings.size(); i++) {
-            System.out.println(bookings.get(i));
-        }
-    }
-
     public void availableDates(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd EEEE HH:mm", Locale.ENGLISH);
         for (int i = 0; i < 5; i++) {
             LocalDateTime dateTime = randomDay();
-            String formatDateTime = "#" + i + ". " + dateTime.format(formatter);
+            String formatDateTime = "i" + ". " + dateTime.format(formatter);
+            Collections.sort(availableBookings, Comparator.naturalOrder());
             availableBookings.add(formatDateTime);
             System.out.println(formatDateTime);
+
         }
     }
 
@@ -104,7 +113,7 @@ public class Booking {
         LocalDateTime end = LocalDateTime.of(2024, 12, 31, 23, 59);
         long days = ChronoUnit.DAYS.between(start, end);
         long randomDays = ThreadLocalRandom.current().nextLong(days + 1);
-        int randomHour = random.nextInt(10) + 8;
+        int randomHour = random.nextInt(8) + 10;
         int randomMinute;
         if (random.nextInt() <= 30) {randomMinute = 30;
         } else {randomMinute = 0;}
@@ -113,20 +122,137 @@ public class Booking {
                 .withMinute(randomMinute);
     }
 
+    public void viewBookings(){
+        for (int i = 0; i < bookings.size(); i++){
+            Booking booking = bookings.get(i);
+            System.out.println(i + ". Customer\n" + booking.getSelectedDate() + "\n" + booking.customer.getCustomerName() + "\n" + booking.customer.getCustomerMail() + "\n");
+        }
+    }
+
     public void deleteBooking() {
+        viewBookings();
+        System.out.println("Enter number of booking wanted deleted");
+        int ans = scanner.nextInt();
+        scanner.nextLine();
+
+        if (ans >= 0 && ans < bookings.size()){
+            Booking deletedBooking = bookings.remove(ans);
+            saveFileAfterDeleteBooking(deletedBooking);
+            System.out.println("Booking deleted");
+        } else {
+            System.out.println("INVALID!!!");
+        }
     }
 
-    public void saveFileAfterDeleteBooking() {
+    public void saveFileAfterDeleteBooking(Booking deletedBooking) {
+        try {
+            PrintWriter print = new PrintWriter(new FileWriter(filename));
+            for (int i = 0; i < bookings.size(); i++) {
+                Booking booking = bookings.get(i);
+                print.println(booking.getSelectedDate() + "\n" + booking.customer.getCustomerName() + "\n" + booking.customer.getCustomerMail());
+            }
+            print.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+/*
     public void saveFile() {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(filename, true));
+            for (Booking i : bookings) {
+                writer.write(i.getSelectedDate() + "," + i.customer.getCustomerName() + "," + i.customer.getCustomerMail() + "\n");
+            }
+            writer.close();
+            System.out.println("The file has been saved");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
     }
 
     public void readFile() {
+        try {
+            File file = new File(filename);
+            if (!file.exists()) {
+                System.out.println("File 'BookingFile.txt' does not exist.");
+                return;
+            }
+            Scanner sc = new Scanner(file);
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] parts = line.split("\n");
+                if (parts.length == 3) {
+                    String date = parts[0];
+                    String name = parts[1];
+                    String mail = parts[2];
 
+                    Booking booking = new Booking();
+                    booking.customer = new Customer("", "");
+
+                    booking.setSelectedDate(date);
+                    booking.customer.setCustomerName(name);
+                    booking.customer.setCustomerMail(mail);
+                    bookings.add(booking);
+                }
+            }
+            sc.close();
+        } catch (IOException e) {
+            System.out.println("Error occurred");
+            e.printStackTrace();
+        }
+    }
+*/
+
+
+    public void saveFile() {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(filename, true));
+            for (Booking i : bookings) {
+                writer.write("%s\nName:%s\nMail:%s\n_______________________".
+                        formatted(i.getSelectedDate(), i.customer.getCustomerName(), i.customer.getCustomerMail()));
+               // writer.write(System.lineSeparator());
+            }
+            writer.close();
+            System.out.println("The file has been saved");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
     }
 
+    public void readFile() {
+        try {
+            File file = new File(filename);
+            if (!file.exists()) {
+                System.out.println("File 'BookingFile.txt' does not exist.");
+                return;
+            }
+            Scanner sc = new Scanner(file);
+            while (sc.hasNextLine()) {
+                String date = sc.nextLine();
+                String name = sc.nextLine();
+                String mail = sc.nextLine();
+                sc.nextLine();
 
+                Booking booking = new Booking();
+                booking.customer = new Customer("","");
+
+                booking.setSelectedDate(date);
+                booking.customer.setCustomerName(name);
+                booking.customer.setCustomerMail(mail);
+                bookings.add(booking);
+                } sc.close();
+        } catch (IOException e){
+            System.out.println("Error occured");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return  bookings.indexOf(this) + ". " +"\n" +
+                customer.getCustomerName() + "\n" +
+                customer.getCustomerMail() + "\n" +
+                selectedDate;
+    }
 }
-
-
