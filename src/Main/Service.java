@@ -18,8 +18,8 @@ public class Service {
         this.price = price;
     }
 
-    public Service() {
-        serviceAdd();
+    Service() {
+
     }
 
     public String getName() {

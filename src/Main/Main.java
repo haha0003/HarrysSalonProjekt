@@ -21,6 +21,7 @@ public class Main {
 
         Booking booking = new Booking();
         Service service = new Service();
+        Finance finance = new Finance();
 
         boolean running = true;
         System.out.println("Welcome!");
@@ -31,7 +32,7 @@ public class Main {
                 case 1 -> booking.createBooking();
                 case 2 -> booking.deleteBooking();
                 case 3 -> System.out.println();
-                case 4 -> System.out.println();
+                case 4 -> finance.financeRun();
                 case 5 -> service.viewServices();
                 case 6 -> service.chooseService();
                 case 7 -> service.viewServicesNoPrice();
