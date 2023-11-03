@@ -21,8 +21,8 @@ public class Main {
 
         boolean running = true;
         System.out.println("Welcome!");
+        booking.readFile();
         while (running) {
-            booking.readFile();
             menu.printMenu();
         int userInput = menu.readChoice();
             switch (userInput) {

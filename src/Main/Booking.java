@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Array;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +16,7 @@ public class Booking {
     private String selectedDate;
     private ArrayList<String> availableBookings = new ArrayList<String>();
     private ArrayList<Booking> bookings = new ArrayList<>();
-    final String filename = "BookingFile.txt";
+    final String filename = "BookingFileNew.txt";
 
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
@@ -67,7 +65,7 @@ public class Booking {
             if (ans >= 0 && ans < availableBookings.size()) {
                 setSelectedDate (availableBookings.get(ans));
                 availableBookings.remove(ans);
-                setSelectedDate (selectedDate.replaceAll("#\\d+\\. ", ""));
+                setSelectedDate (selectedDate.replaceAll("\\d+\\. ", ""));
                 System.out.println("Selected date: " + getSelectedDate());
 
                 Booking booking = new Booking(customer.getCustomerName(), customer.getCustomerMail(), getSelectedDate());
@@ -80,7 +78,7 @@ public class Booking {
                 System.out.println("Booking date: " + getSelectedDate());
                 service.viewSelectedServicesNoPrice();
 
-                saveFile();
+                saveFile(booking);
 
                 validChoice = true;
             } else {
@@ -93,7 +91,7 @@ public class Booking {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd EEEE HH:mm", Locale.ENGLISH);
         for (int i = 0; i < 5; i++) {
             LocalDateTime dateTime = randomDay();
-            String formatDateTime = "i" + ". " + dateTime.format(formatter);
+            String formatDateTime = i + ". " + dateTime.format(formatter);
             Collections.sort(availableBookings, Comparator.naturalOrder());
             availableBookings.add(formatDateTime);
             System.out.println(formatDateTime);
@@ -156,63 +154,12 @@ public class Booking {
             e.printStackTrace();
         }
     }
-
-/*
-    public void saveFile() {
+    public void saveFile(Booking booking) {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(filename, true));
-            for (Booking i : bookings) {
-                writer.write(i.getSelectedDate() + "," + i.customer.getCustomerName() + "," + i.customer.getCustomerMail() + "\n");
-            }
-            writer.close();
-            System.out.println("The file has been saved");
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-        }
-    }
-
-    public void readFile() {
-        try {
-            File file = new File(filename);
-            if (!file.exists()) {
-                System.out.println("File 'BookingFile.txt' does not exist.");
-                return;
-            }
-            Scanner sc = new Scanner(file);
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                String[] parts = line.split("\n");
-                if (parts.length == 3) {
-                    String date = parts[0];
-                    String name = parts[1];
-                    String mail = parts[2];
-
-                    Booking booking = new Booking();
-                    booking.customer = new Customer("", "");
-
-                    booking.setSelectedDate(date);
-                    booking.customer.setCustomerName(name);
-                    booking.customer.setCustomerMail(mail);
-                    bookings.add(booking);
-                }
-            }
-            sc.close();
-        } catch (IOException e) {
-            System.out.println("Error occurred");
-            e.printStackTrace();
-        }
-    }
-*/
-
-
-    public void saveFile() {
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter(filename, true));
-            for (Booking i : bookings) {
-                writer.write("%s\nName:%s\nMail:%s\n_______________________".
-                        formatted(i.getSelectedDate(), i.customer.getCustomerName(), i.customer.getCustomerMail()));
-               // writer.write(System.lineSeparator());
-            }
+            writer.println("Date: " + booking.selectedDate);
+            writer.println("Name: " + booking.customer.getCustomerName());
+            writer.println("Mail: " + booking.customer.getCustomerMail());
             writer.close();
             System.out.println("The file has been saved");
         } catch (IOException e) {
@@ -232,7 +179,6 @@ public class Booking {
                 String date = sc.nextLine();
                 String name = sc.nextLine();
                 String mail = sc.nextLine();
-                sc.nextLine();
 
                 Booking booking = new Booking();
                 booking.customer = new Customer("","");
